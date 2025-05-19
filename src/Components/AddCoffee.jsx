@@ -1,25 +1,33 @@
 import React from 'react';
+import Swal from 'sweetalert2';
 
 const AddCoffee = () => {
-    const handleAddCoffee=e=>{
+    const handleAddCoffee = e => {
         e.preventDefault();
-        const form=e.target;
-        const formData=new FormData(form);
-        const newCoffee=Object.fromEntries(formData.entries())
+        const form = e.target;
+        const formData = new FormData(form);
+        const newCoffee = Object.fromEntries(formData.entries())
         console.log(newCoffee);
 
         //send coffee data to the db
-        fetch('http://localhost:3000/coffees',{
-            method:'POST',
-            headers:{
-                'content-type':'application/json'
+        fetch('http://localhost:3000/coffees', {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json'
             },
-            body:JSON.stringify(newCoffee)
+            body: JSON.stringify(newCoffee)
         })
-        .then(res=>res.json())
-        .then(data=>{
-            console.log('after adding coffee to the db',data);
-        })
+            .then(res => res.json())
+            .then(data => {
+               if(data.insertedId){
+                console.log('Added successfully')
+                Swal.fire({
+                        title: "Coffee added successfully!",
+                        icon: "success",
+                        draggable: true
+                    });
+               }
+            })
     }
     return (
         <div className='p-24  bg-[#F4F3F0] shadow'>
@@ -48,21 +56,21 @@ const AddCoffee = () => {
                         <input type="text" name='taste' className="input w-full" placeholder="Enter coffee taste" />
                     </fieldset>
                     <fieldset className="fieldset bg-base-200 border-base-300 rounded-box border p-4">
-                        <label className="label">Category</label>
-                        <input type="text" name='category' className="input w-full" placeholder="Enter coffee category" />
+                        <label className="label">Price</label>
+                        <input type="text" name='price' className="input w-full" placeholder="Price for per cup" />
                     </fieldset>
                     <fieldset className="fieldset bg-base-200 border-base-300 rounded-box border p-4">
                         <label className="label">Details</label>
                         <input type="text" name='details' className="input w-full" placeholder="Enter coffee details" />
                     </fieldset>
-                    
-                </div>
-                 <fieldset className="fieldset bg-base-200 border-base-300 rounded-box border my-5 p-4">
-                        <label className="label">Photo</label>
-                        <input type="text" name='photo' className="input w-full" placeholder="Enter photo URL" />
-                    </fieldset>
 
-                    <input type="submit" className="btn border-[#331A15] bg-[#D2B48C] btn-warning w-full" value='Add Coffee' />
+                </div>
+                <fieldset className="fieldset bg-base-200 border-base-300 rounded-box border my-5 p-4">
+                    <label className="label">Photo</label>
+                    <input type="text" name='photo' className="input w-full" placeholder="Enter photo URL" />
+                </fieldset>
+
+                <input type="submit" className="btn border-[#331A15] bg-[#D2B48C] btn-warning w-full" value='Add Coffee' />
             </form>
         </div>
     );
